@@ -1,0 +1,27 @@
+// Production schema for PostgreSQL (Vercel deployment)
+// To use this, rename it to schema.prisma or update your schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Clip {
+  slug          String    @id
+  content       String?
+  fileUrl       String?
+  fileName      String?
+  fileType      String?
+  fileSize      Int?
+  createdAt     DateTime  @default(now())
+  expiresAt     DateTime?
+  destroyOnRead Boolean   @default(true)
+  readAt        DateTime?
+
+  @@index([expiresAt])
+}
+

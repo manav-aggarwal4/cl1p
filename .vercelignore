@@ -1,0 +1,10 @@
+# Files to ignore in Vercel deployment
+dev.db
+dev.db-journal
+*.db
+*.db-journal
+.env
+.env.local
+public/uploads
+node_modules/.cache
+
