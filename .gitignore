@@ -38,3 +38,5 @@ yarn-error.log*
 # uploads (local development)
 /public/uploads
 
+.npmrc
+

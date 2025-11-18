@@ -21,6 +21,7 @@ export default function ClipForm() {
   const [destroyOnRead, setDestroyOnRead] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [createdClipUrl, setCreatedClipUrl] = useState<string | null>(null)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -66,8 +67,21 @@ export default function ClipForm() {
         return
       }
 
-      // Redirect to the clip page
-      router.push(`/${data.slug}`)
+      // If destroy-on-read is enabled, show URL instead of redirecting
+      // (so user can share it before it gets destroyed)
+      if (destroyOnRead) {
+        const clipUrl = `${window.location.origin}/${data.slug}`
+        setCreatedClipUrl(clipUrl)
+        setIsSubmitting(false)
+        // Reset form
+        setSlug('')
+        setContent('')
+        setFile(null)
+        setTtl('')
+      } else {
+        // Only redirect if destroy-on-read is disabled
+        router.push(`/${data.slug}`)
+      }
     } catch (err) {
       setError('An unexpected error occurred')
       setIsSubmitting(false)
@@ -156,7 +170,7 @@ export default function ClipForm() {
           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
         />
         <label htmlFor="destroyOnRead" className="ml-2 text-sm font-medium">
-          Destroy on read (default: enabled)
+          Destroy on read - Clip will be deleted after first view (default: enabled)
         </label>
       </div>
 
@@ -166,13 +180,61 @@ export default function ClipForm() {
         </div>
       )}
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isSubmitting ? 'Creating...' : 'Create Clip'}
-      </button>
+      {createdClipUrl && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-6 space-y-4">
+          <div className="flex items-center">
+            <svg className="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 className="text-lg font-semibold text-green-800">Clip created successfully!</h3>
+          </div>
+          <div>
+            <p className="text-sm text-gray-700 mb-2">Share this URL (will be deleted after first view):</p>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                readOnly
+                value={createdClipUrl}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md bg-white font-mono text-sm"
+                onClick={(e) => (e.target as HTMLInputElement).select()}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(createdClipUrl)
+                  alert('URL copied to clipboard!')
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-2 rounded text-sm">
+            ⚠️ This clip will be deleted after the first person views it. Share the URL now!
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setCreatedClipUrl(null)
+              window.open(createdClipUrl, '_blank')
+            }}
+            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700"
+          >
+            Open in New Tab
+          </button>
+        </div>
+      )}
+
+      {!createdClipUrl && (
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? 'Creating...' : 'Create Clip'}
+        </button>
+      )}
     </form>
   )
 }

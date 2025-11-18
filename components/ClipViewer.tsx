@@ -99,7 +99,7 @@ export default function ClipViewer({ slug }: ClipViewerProps) {
 
         {clip.destroyOnRead && (
           <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded mb-4">
-            This clip was destroyed after being read
+            ⚠️ This clip will be deleted after you view it. Refresh the page and it will be gone.
           </div>
         )}
 
