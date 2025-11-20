@@ -134,11 +134,31 @@ export default function ClipForm() {
           id="file"
           onChange={(e) => setFile(e.target.files?.[0] || null)}
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          accept="*/*"
         />
         {file && (
-          <p className="mt-1 text-sm text-gray-600">
-            Selected: {file.name} ({(file.size / 1024).toFixed(2)} KB)
-          </p>
+          <div className="mt-3 space-y-2">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <span className="font-medium">{file.name}</span>
+              <span className="text-gray-400">
+                ({(file.size / 1024).toFixed(2)} KB)
+              </span>
+            </div>
+            {/* Image Preview */}
+            {file.type.startsWith('image/') && (
+              <div className="mt-2">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt="Preview"
+                  className="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm"
+                  style={{ maxHeight: '200px' }}
+                />
+              </div>
+            )}
+          </div>
         )}
       </div>
 

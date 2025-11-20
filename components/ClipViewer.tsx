@@ -113,8 +113,10 @@ export default function ClipViewer({ slug }: ClipViewerProps) {
         )}
 
         {clip.fileUrl && (
-          <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-2">File:</h3>
+          <div className="mb-6">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">
+              {clip.fileType?.startsWith('image/') ? 'Image:' : clip.fileType?.startsWith('video/') ? 'Video:' : 'File:'}
+            </h3>
             <FileDownload
               url={clip.fileUrl}
               fileName={clip.fileName || 'download'}
