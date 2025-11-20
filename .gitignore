@@ -29,6 +29,8 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Note: .npmrc is NOT ignored - it needs to be committed for Vercel builds
+
 # prisma
 /dev.db
 /dev.db-journal
@@ -38,5 +40,5 @@ yarn-error.log*
 # uploads (local development)
 /public/uploads
 
-.npmrc
+# Note: .npmrc is NOT ignored - it needs to be committed for Vercel builds
 
